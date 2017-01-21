@@ -1,0 +1,19 @@
+version: '2'
+services:
+  freeze:
+    build: .
+    environment:
+      - MONGO_ARCHIVE_PREFIX
+      - MONGO_HOST
+      - MONGO_APP_DB
+      - MONGO_APP_USER
+      - MONGO_APP_PASSWORD
+      - AZURE_STORAGE_ACCOUNT
+      - AZURE_STORAGE_ACCESS_KEY
+      - AZURE_BLOB_CONTAINER
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: npm start
+    ports:
+      - "80:8080"
