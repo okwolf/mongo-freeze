@@ -38,7 +38,8 @@ const cleanupFile = file => new Promise((resolve, reject) => {
 })
 
 export default function mongoFreeze() {
-  const archiveName = `${MONGO_ARCHIVE_PREFIX}-${moment().format('Y-MM-DD-HH-mm-ss')}.archive`
+  const timeStamp = moment().utc().format('Y-MM-DD-HH-mm-ss');
+  const archiveName = `${MONGO_ARCHIVE_PREFIX}-${timeStamp}.archive`
   createArchiveNamed(archiveName).then(() => {
     console.log(`created archive: ${archiveName}`)
     return saveToBlobStorage(archiveName)
