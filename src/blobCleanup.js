@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { flow, sortBy, difference, last, uniq } from 'lodash'
+import { flow, sortBy, difference, last, uniq, range, map, flatten } from 'lodash'
 
 const addCreatedAsMoment = blobs => blobs.map(blob => ({
   ...blob,
@@ -9,18 +9,20 @@ const sortByCreated = blobs => sortBy(blobs, 'created')
 const removeCreated = blobs => blobs.map(({ created, ...blob }) => blob)
 
 const blobsToCleanup = when => blobs => {
-  const exceptLastOfTimeUnit = timeUnit => {
-    const start = moment(when).subtract(2, timeUnit).startOf(timeUnit)
-    const end = moment(when).subtract(2, timeUnit).endOf(timeUnit)
+  const exceptLastOf = ({ timeUnit, ago = 2 }) => {
+    const start = moment(when).subtract(ago, timeUnit).startOf(timeUnit)
+    const end = moment(when).subtract(ago, timeUnit).endOf(timeUnit)
     const filteredBlobs = blobs.filter(blob => blob.created.isBetween(start, end, null, '[]'))
 
     return difference(filteredBlobs, [last(filteredBlobs)])
   }
 
   return [
-    ...exceptLastOfTimeUnit('hour'),
-    ...exceptLastOfTimeUnit('day'),
-    ...exceptLastOfTimeUnit('month')
+    ...flatten(
+      range(2, 25).map(ago => exceptLastOf({ timeUnit: 'hour', ago }))
+    ),
+    ...exceptLastOf({ timeUnit: 'day' }),
+    ...exceptLastOf({ timeUnit: 'month' })
   ]
 }
 
