@@ -1,4 +1,6 @@
 import azure from 'azure-storage'
+import moment from 'moment'
+import blobCleanup from './blobCleanup'
 
 const blobService = azure.createBlobService()
 const { AZURE_BLOB_CONTAINER } = process.env
@@ -46,10 +48,23 @@ const listBlobs = () => new Promise((resolve, reject) => {
   )
 })
 
-const deleteOldBlobs = blobs => new Promise((resolve, reject) => {
-  console.log('TODO: delete old blobs...')
-  resolve(blobs)
+const deleteBlob = blobName => new Promise((resolve, reject) => {
+  blobService.deleteBlob(
+    AZURE_BLOB_CONTAINER,
+    blobName,
+    (error, result) => {
+      if (error) {
+        reject(error)
+      } else {
+        resolve(result)
+      }
+    }
+  )
 })
+
+const deleteOldBlobs = blobs => Promise.all(
+  blobCleanup({ blobs }).map(blob => deleteBlob(blob.name))
+)
 
 export function saveToBlobStorage(file) {
   return ensureContainer().then(uploadToBlobStorage(file))
