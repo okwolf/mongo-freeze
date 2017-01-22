@@ -49,7 +49,8 @@ export default function mongoFreeze() {
   }).then(() => {
     console.log(`cleaned up ${archiveName} after saving`)
     return cleanupBlobs()
-  }).then(() => {
+  }).then(deletedBlobs => {
+    deletedBlobs.forEach(({ name }) => console.log(`clean up blob ${name}`))
     console.log(`cleaned up old blobs after saving ${archiveName} complete`)
   }).catch(console.error)
   return {

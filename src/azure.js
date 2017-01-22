@@ -48,15 +48,15 @@ const listBlobs = () => new Promise((resolve, reject) => {
   )
 })
 
-const deleteBlob = blobName => new Promise((resolve, reject) => {
+const deleteBlob = name => new Promise((resolve, reject) => {
   blobService.deleteBlob(
     AZURE_BLOB_CONTAINER,
-    blobName,
+    name,
     (error, result) => {
       if (error) {
         reject(error)
       } else {
-        resolve(result)
+        resolve({ name, result })
       }
     }
   )

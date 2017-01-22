@@ -11,4 +11,5 @@
 # Build the latest
 docker-compose down
 docker-compose build
-docker-compose up
+docker-compose up -d
+docker-compose logs -f
