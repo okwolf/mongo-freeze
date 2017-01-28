@@ -13,7 +13,7 @@ const createArchiveNamed = archiveName => new Promise((resolve, reject) => {
     '--ssl', '--sslAllowInvalidCertificates',
     `--db=${MONGO_APP_DB}`,
     `--username=${MONGO_APP_USER}`,
-    `--password=${MONGO_APP_PASSWORD}`
+    `--password="${MONGO_APP_PASSWORD}"`
   ], { stdio: 'inherit' })
   mongodump.on('error', err => {
     reject(err)
